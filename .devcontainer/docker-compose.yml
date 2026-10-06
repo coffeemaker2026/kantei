@@ -1,0 +1,38 @@
+name: shinki-kantei-devcontainer
+
+services:
+  workspace:
+    image: mcr.microsoft.com/devcontainers/base:ubuntu-24.04
+    volumes:
+      - ..:/workspace:cached
+      - devcontainer-claude-config:/home/vscode/.claude
+    depends_on:
+      web:
+        condition: service_healthy
+    environment:
+      # ログイン情報（.claude.json を含む）をすべて下のボリュームに置き、作り直しても消えないようにする
+      CLAUDE_CONFIG_DIR: /home/vscode/.claude
+    command: sleep infinity
+
+  # 本体の compose.yml と同じ nginx 設定でサイトを配信する。
+  # workspace の中からは http://web/ で、Windows 側からは VS Code のポート転送で見る。
+  web:
+    image: nginx:1.28.3-alpine3.23
+    volumes:
+      - ../frontend:/usr/share/nginx/html:ro
+      - ../nginx:/etc/nginx/conf.d:ro
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:size=16m
+      - /var/run:size=1m
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+volumes:
+  devcontainer-claude-config:

@@ -1,0 +1,20 @@
+name: shinki-kantei
+
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - "${SHINKI_PORT:-8080}:80"
+    volumes:
+      # frontend フォルダごと読み取り専用でマウントし、HTML を編集したらブラウザの再読み込みだけで反映する。
+      # 単一ファイルのマウントは、エディタが保存時にファイルを置き換えると反映されなくなるため避けている。
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx:/etc/nginx/conf.d:ro
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:size=16m
+      - /var/run:size=1m
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped

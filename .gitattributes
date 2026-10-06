@@ -1,0 +1,13 @@
+# Line endings
+#
+# projectB と同じく、作業ツリーは CRLF に揃え、CR が入ると壊れるものだけ LF にする。
+* text=auto eol=crlf
+
+*.sh text eol=lf
+*.conf text eol=lf
+Dockerfile text eol=lf
+*.env text eol=lf
+*.env.example text eol=lf
+
+*.png binary
+*.jpg binary

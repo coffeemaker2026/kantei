@@ -1,0 +1,10 @@
+.git/
+.gitignore
+.env
+.env.*
+*.md
+compose.yml
+node_modules/
+test-results/
+playwright-report/
+.superpowers/

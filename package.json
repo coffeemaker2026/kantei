@@ -1,0 +1,12 @@
+{
+  "name": "shinki-kantei",
+  "private": true,
+  "description": "八百万神器鑑定所（試作）の確認用。サイト本体は frontend/ の静的ファイルだけで動く",
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}
