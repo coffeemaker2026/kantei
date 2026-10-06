@@ -1,12 +1,19 @@
 {
   "name": "shinki-kantei",
   "private": true,
-  "description": "八百万神器鑑定所（試作）の確認用。サイト本体は frontend/ の静的ファイルだけで動く",
+  "description": "八百万神器鑑定所。frontend/ を Vite でビルドし、frontend/dist/ を静的配信する",
   "scripts": {
-    "test": "playwright test",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:preview": "vite build && E2E_PREVIEW=1 playwright test",
     "test:report": "playwright show-report"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0"
+    "@playwright/test": "^1.63.0",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3"
   }
 }
