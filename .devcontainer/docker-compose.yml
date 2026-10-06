@@ -19,7 +19,7 @@ services:
   web:
     image: nginx:1.28.3-alpine3.23
     volumes:
-      - ../frontend:/usr/share/nginx/html:ro
+      - ../frontend/dist:/usr/share/nginx/html:ro
       - ../nginx:/etc/nginx/conf.d:ro
     read_only: true
     tmpfs:
@@ -28,7 +28,7 @@ services:
     security_opt:
       - no-new-privileges:true
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/healthz"]
       interval: 5s
       timeout: 5s
       retries: 10

@@ -14,12 +14,17 @@
     "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
   },
   "forwardPorts": [
-    "web:80"
+    "web:80",
+    5173
   ],
   "portsAttributes": {
     "web:80": {
       "label": "神器鑑定所 (nginx)",
       "onAutoForward": "openBrowser"
+    },
+    "5173": {
+      "label": "神器鑑定所 (Vite 開発サーバー)",
+      "onAutoForward": "notify"
     }
   },
   "postCreateCommand": "bash .devcontainer/post-create.sh",

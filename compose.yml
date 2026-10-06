@@ -7,9 +7,9 @@ services:
     ports:
       - "${SHINKI_PORT:-8080}:80"
     volumes:
-      # frontend フォルダごと読み取り専用でマウントし、HTML を編集したらブラウザの再読み込みだけで反映する。
-      # 単一ファイルのマウントは、エディタが保存時にファイルを置き換えると反映されなくなるため避けている。
-      - ./frontend:/usr/share/nginx/html:ro
+      # ビルド結果の frontend/dist フォルダごと読み取り専用でマウントし、npm run build でビルドし直したらブラウザの再読み込みで反映される。
+      # 単一ファイルのマウントは、ファイルが置き換えられると反映されなくなるため避けている。
+      - ./frontend/dist:/usr/share/nginx/html:ro
       - ./nginx:/etc/nginx/conf.d:ro
     read_only: true
     tmpfs:

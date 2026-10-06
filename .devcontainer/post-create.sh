@@ -10,9 +10,12 @@ cd /workspace
 npm ci
 npx playwright install --with-deps chromium
 
+# web コンテナは frontend/dist/ を配信するので、ここでビルドしておく
+npm run build
+
 # サイトが配信されているかを確認する（workspace から web コンテナへ）
 if curl --silent --fail --output /dev/null http://web/; then
-  echo "神器鑑定所: http://web/ で配信中"
+  echo "神器鑑定所: http://web/ で配信中（npm run build の結果）"
 else
   echo "警告: http://web/ に接続できません。docker compose の web サービスを確認してください" >&2
 fi
