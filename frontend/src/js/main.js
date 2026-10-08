@@ -14,6 +14,7 @@ const STEPS = [null, "step-reception", "step-apply", "step-review", "step-issue"
 const HASHES = [null, "", "#apply", "#review", "#issue"];
 let card = null; // 判定済みのカード
 let cancelReview = null; // ③の待ち時間の途中なら、それを止める関数
+let navCount = 0; // 「戻る」「進む」の回数。申請の途中で画面を離れたかを見分ける
 
 function stepFromHash(){
   const i = HASHES.indexOf(location.hash);
@@ -47,6 +48,7 @@ function sync(focus){
   show(step, focus);
 }
 window.addEventListener("popstate", () => {
+  navCount++;
   if (cancelReview) cancelReview(false); // ③を離れたら、待ち時間のタイマーを残さない
   sync(true);
 });
@@ -200,6 +202,7 @@ function showCard(){
     img.src = canvas.toDataURL("image/png");
     img.alt = `${card.rank}ランク：${card.title}${card.sub}。${card.lore}`;
     $("front").classList.toggle("holo", card.rank === "SSR" || card.rank === "SR");
+    void flipper.offsetWidth; // ④を出した直後でも、めくれる動きが起きるように
     flipper.classList.add("flipped");
   };
   if (flipper.classList.contains("flipped") && !reduceMotion()){
@@ -218,17 +221,20 @@ async function run(isAppeal){
   busy = true;
   try {
     const name = itemName.value.trim(), cat = category.value, key = name + "|" + cat + "|" + photoSig;
-    const nextAppeals = (!isAppeal || key !== lastKey) ? 0 : appeals + 1;
+    // 試作と同じ決まり：申請なら 0。再審は、品名・分類・写真が変わっていれば 1 から数え直す
+    const nextAppeals = !isAppeal ? 0 : key !== lastKey ? 1 : appeals + 1;
+    const nav = navCount;
     const fromIssue = document.body.dataset.step === "4";
     const wait = reduceMotion() ? Promise.resolve(true) : review(isAppeal, fromIssue);
     await ensureFonts();
     const next = appraise({ name, signature: photoSig, category: cat, appeals: nextAppeals });
     const nextCanvas = drawCard(next, editor.getState());
-    if (!(await wait)) return; // ③の途中で離れたときは、判定を捨てる
+    // ③の途中や、書体を待つあいだに「戻る」などで離れたときは、判定を捨てる
+    if (!(await wait) || nav !== navCount) return;
     lastKey = key; appeals = nextAppeals; card = next; canvas = nextCanvas;
-    showCard();
     if (document.body.dataset.step === "4") show(4, true);
     else go(4, { replace: document.body.dataset.step === "3" });
+    showCard(); // ④を出してから。出す前だとめくれる動きが起きない
   } finally {
     busy = false;
   }

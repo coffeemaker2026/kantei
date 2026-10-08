@@ -4,9 +4,11 @@ import { PW, PH, imgRect, pathOf, drawPhoto } from "./editor.js";
 
 const W = 750, H = 1050;
 
-// 書体を読み込んでから描く。読み込めなくても端末の書体で描く
+// 書体を読み込んでから描く。読み込めない・時間がかかりすぎるときは端末の書体で描く
+const FONT_TIMEOUT_MS = 2000;
 export async function ensureFonts(){
-  try { await Promise.all([document.fonts.load('40px "Zen Antique"'),document.fonts.load('24px "Zen Kaku Gothic New"'),document.fonts.load('700 24px "Zen Kaku Gothic New"')]); } catch(_) {}
+  const load = Promise.all([document.fonts.load('40px "Zen Antique"'),document.fonts.load('24px "Zen Kaku Gothic New"'),document.fonts.load('700 24px "Zen Kaku Gothic New"')]);
+  try { await Promise.race([load, new Promise(r => setTimeout(r, FONT_TIMEOUT_MS))]); } catch(_) {}
 }
 
 /* ---------- 写真窓：切り抜き・後光・スポットライト ---------- */

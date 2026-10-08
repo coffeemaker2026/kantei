@@ -144,3 +144,47 @@ test("④で横スクロールが出ない", async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+// 書体の読み込み（document.fonts.load）を ms だけ遅らせる。null なら終わらない
+async function slowFonts(page, ms){
+  await page.evaluate(ms => {
+    document.fonts.load = () => new Promise(r => { if (ms !== null) setTimeout(() => r([]), ms); });
+  }, ms);
+}
+
+test("書体の読み込みが遅いあいだに戻っても④に飛ばない", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await slowFonts(page, 1500);
+  await applyWithSample(page, "mug");
+  await page.goBack();
+  await expect(step(page)).toHaveAttribute("data-step", "1");
+  await page.waitForTimeout(3000);
+  await expect(step(page)).toHaveAttribute("data-step", "1");
+});
+
+test("書体の読み込みが終わらなくても④まで進む", async ({ page }) => {
+  await slowFonts(page, null);
+  await applyWithSample(page, "mug");
+  await expect(step(page)).toHaveAttribute("data-step", "4", { timeout: 8000 });
+});
+
+test("最初の交付でカードが裏から表にめくれる", async ({ page }) => {
+  await page.evaluate(() => {
+    window.__flipped = false;
+    document.getElementById("flipper").addEventListener("transitionend", () => { window.__flipped = true; });
+  });
+  await toIssue(page);
+  await expect.poll(() => page.evaluate(() => window.__flipped), { timeout: 3000 }).toBe(true);
+});
+
+test("品名を変えてから進むで④に戻って異議を申し立てると、試作と同じく再審 1 回目になる", async ({ page }) => {
+  await toIssue(page, "pen");
+  await page.goBack();
+  await expect(step(page)).toHaveAttribute("data-step", "2");
+  await page.locator("#itemName").fill("ボールペン改");
+  await page.goForward();
+  await expect(step(page)).toHaveAttribute("data-step", "4");
+  await page.locator("#appeal").click();
+  await expect(step(page)).toHaveAttribute("data-step", "4", { timeout: 3000 });
+  await expect(page.locator("#count")).toHaveText("再審 1 回目");
+});
