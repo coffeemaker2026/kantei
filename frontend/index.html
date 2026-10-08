@@ -10,10 +10,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Zen+Antique&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
 <script type="module" src="/src/js/main.js"></script>
 </head>
-<body>
+<body data-step="1">
 <header class="site-header">
   <a class="site-name" href="./">八百万神器鑑定所</a>
-  <span class="tag"><a href="about.html">鑑定所について</a></span>
+  <a id="aboutTag" class="tag" href="about.html">鑑定所について</a>
+  <span id="ticketTag" class="tag" hidden>受付番号 0427</span>
 </header>
 <ol class="steps">
   <li aria-current="step">①受付</li>
@@ -22,11 +23,78 @@
   <li>④交付</li>
 </ol>
 <main>
-  <h1>その持ち物、<br>神器かもしれない。</h1>
-  <p>写真と名前を申請すると、神々が審査して鑑定カードを交付します。</p>
-  <button type="button" class="btn-primary">番号札を取る</button>
-  <p class="notice">※ 写真はこの端末の中で使うだけで、どこにも送りません</p>
-  <div class="slot"></div>
+  <section id="step-reception">
+    <h1 tabindex="-1">その持ち物、<br>神器かもしれない。</h1>
+    <p class="lead">写真と名前を申請すると、神々が審査して鑑定カードを交付します。</p>
+    <div class="fan" id="fan"></div>
+    <button type="button" class="btn-primary" id="takeTicket">番号札を取る</button>
+    <p class="notice">※ 写真はこの端末の中で使うだけで、どこにも送りません</p>
+    <div class="slot" data-slot="ad"></div>
+  </section>
+
+  <section id="step-apply" hidden>
+    <form id="applyForm" novalidate>
+      <div class="paper apply-paper">
+        <h2 class="form-title" tabindex="-1">神器鑑定申請書</h2>
+        <p class="form-no">様式第8号（第3条関係）</p>
+        <div class="stamp" aria-hidden="true">受付</div>
+
+        <div class="row thick">
+          <label class="row-label" for="itemName">品名</label>
+          <div class="cell">
+            <input type="text" id="itemName" maxlength="16" placeholder="例：ボールペン" autocomplete="off" aria-describedby="nameError">
+            <p class="field-error" id="nameError"></p>
+          </div>
+        </div>
+        <div class="row thick">
+          <label class="row-label" for="category">分類</label>
+          <div class="cell">
+            <select id="category"></select>
+          </div>
+        </div>
+        <div class="row thick">
+          <span class="row-label" id="photoLabel">現物写真</span>
+          <div class="cell">
+            <button type="button" class="attach" id="attachPhoto" aria-describedby="photoLabel photoError">写真を添付する</button>
+            <input type="file" id="photo" accept="image/*" class="visually-hidden" tabindex="-1" aria-labelledby="photoLabel">
+            <p class="field-error" id="photoError"></p>
+          </div>
+        </div>
+
+        <div class="editor-wrap" id="editorWrap" hidden>
+          <h3 class="sub-title">添付写真の調整</h3>
+          <div class="tools" role="group" aria-label="写真の調整">
+            <button type="button" id="modeMove" aria-pressed="true">位置を動かす</button>
+            <button type="button" id="modeLasso" aria-pressed="false">なぞって切り抜く</button>
+          </div>
+          <canvas id="editor" width="638" height="440" aria-label="写真の調整エリア"></canvas>
+          <div class="edit-row">
+            <p class="hint" id="editHint">ドラッグで位置を調整できます。</p>
+            <button type="button" class="small" id="clearLasso" hidden>切り抜きを消す</button>
+          </div>
+          <label class="zoom" for="zoom">大きさ<input type="range" id="zoom" min="0.5" max="3" step="0.01" value="1"></label>
+        </div>
+        <p class="apply-status" id="applyStatus" role="status"></p>
+      </div>
+
+      <p class="notice">※ 太枠内をご記入ください</p>
+      <button type="submit" class="btn-primary" id="submitApply">申請する</button>
+      <p class="samples-line">写真がないときは <button type="button" class="link-btn" id="showSamples" aria-expanded="false" aria-controls="sampleList">見本で試す</button></p>
+      <div class="sample-list" id="sampleList" role="group" aria-label="見本の写真" hidden>
+        <button type="button" class="btn" data-sample="mug">マグカップ</button>
+        <button type="button" class="btn" data-sample="pen">ボールペン</button>
+        <button type="button" class="btn" data-sample="clock">目覚まし時計</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="step-review" hidden>
+    <h2 class="visually-hidden" tabindex="-1">審査中</h2>
+  </section>
+
+  <section id="step-issue" hidden>
+    <h2 class="visually-hidden" tabindex="-1">鑑定カードの交付</h2>
+  </section>
 </main>
 <footer class="site-footer">
   <ul>

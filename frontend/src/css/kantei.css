@@ -1,0 +1,75 @@
+/* 手続きの画面（index.html）だけの見た目：①受付・②申請 */
+
+/* ---------- ①受付 ---------- */
+#step-reception h1{font-size:clamp(1.6rem,6vw,2.2rem);margin:.2em 0 .4em}
+#step-reception .lead{color:var(--muted);margin:0 0 8px}
+.fan{position:relative;height:clamp(170px,48vw,260px);margin:8px 0 4px}
+
+/* ---------- ②申請 ---------- */
+.apply-paper{position:relative;padding:18px 14px 14px}
+.form-title{font-size:1.3rem;margin:0;text-align:center;letter-spacing:.3em}
+.paper .form-title{border:0;padding:0}
+.form-no{font-size:.75rem;color:var(--paper-muted);margin:2px 0 10px!important}
+
+/* 朱の丸い判子（飾り） */
+.stamp{
+  position:absolute;right:12px;top:12px;width:48px;height:48px;border-radius:50%;
+  border:2px solid var(--vermilion);color:var(--vermilion);background:rgba(244,238,220,.67);
+  display:grid;place-items:center;font-weight:700;font-size:.8rem;transform:rotate(-12deg);
+}
+
+/* 表の行：項目名＋記入欄。太枠は記入する欄 */
+.row{display:flex;border:1px solid var(--paper-line);margin-top:-1px}
+.row.thick{border:2px solid #1B2340}
+.row.thick + .row.thick{margin-top:-2px}
+.row-label{
+  flex:0 0 5.5em;background:#E9DFC2;border-right:1px solid #1B2340;
+  padding:8px;font-weight:700;display:flex;align-items:flex-start;
+}
+.cell{flex:1;min-width:0;padding:6px 8px;background:#FFFDF5}
+.cell input[type="text"],.cell select{
+  width:100%;font:inherit;color:var(--paper-ink);background:#fff;
+  border:1px solid var(--paper-line);border-radius:3px;padding:6px 8px;
+}
+.cell input[aria-invalid="true"]{border-color:var(--vermilion);border-width:2px}
+.attach{
+  font:inherit;font-weight:700;color:var(--paper-ink);background:#fff;cursor:pointer;
+  border:1.5px solid var(--paper-ink);border-radius:3px;padding:6px 12px;
+}
+.field-error{margin:4px 0 0!important;color:var(--vermilion);font-size:.85rem;font-weight:700}
+.field-error:empty{display:none}
+
+/* 添付写真の調整 */
+.editor-wrap{margin-top:16px}
+.sub-title{font-size:1rem;margin:0 0 6px!important;border:0!important;padding:0!important}
+.tools{display:flex}
+.tools button{
+  flex:1;font:inherit;font-size:.9rem;padding:6px 0;cursor:pointer;
+  background:transparent;color:var(--paper-ink);border:1px solid #1B2340;
+}
+.tools button + button{border-left:0}
+.tools button[aria-pressed="true"]{background:#1B2340;color:var(--paper)}
+#editor{
+  display:block;width:100%;height:auto;aspect-ratio:638/440;margin-top:8px;
+  border-radius:4px;background:#222;touch-action:none;cursor:grab;
+}
+#editor.lasso{cursor:crosshair}
+.edit-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
+.hint{margin:0!important;font-size:.85rem;color:var(--paper-muted)}
+.small{
+  flex:none;font:inherit;font-size:.85rem;cursor:pointer;color:var(--paper-ink);
+  background:transparent;border:1px solid var(--paper-ink);border-radius:3px;padding:3px 8px;
+}
+.zoom{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:.9rem}
+.zoom input{flex:1;min-width:0;accent-color:#1B2340}
+.apply-status{margin:10px 0 0!important;font-size:.85rem;color:var(--paper-muted)}
+.apply-status:empty{display:none}
+
+/* 見本で試す */
+.samples-line{text-align:center;color:var(--muted);font-size:.9rem;margin:14px 0 0}
+.link-btn{
+  font:inherit;color:var(--ink);background:none;border:0;padding:0;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;
+}
+.sample-list{display:flex;gap:8px;margin-top:8px}
+.sample-list .btn{margin:0;flex:1;min-width:0;font-size:.9rem;padding:8px 2px}
