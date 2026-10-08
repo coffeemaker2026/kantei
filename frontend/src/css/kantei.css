@@ -6,7 +6,15 @@
 /* ---------- ①受付 ---------- */
 #step-reception h1{font-size:clamp(1.6rem,6vw,2.2rem);margin:.2em 0 .4em}
 #step-reception .lead{color:var(--muted);margin:0 0 8px}
-.fan{position:relative;height:clamp(170px,48vw,260px);margin:8px 0 4px}
+/* 見本のカード3枚を扇形に。1枚は①の幅の約3分の1 */
+.fan{position:relative;height:clamp(160px,49vw,312px);margin:12px 0 16px}
+.fan-card{
+  position:absolute;top:0;width:34%;height:auto;aspect-ratio:750/1050;
+  border-radius:5px;box-shadow:0 8px 18px rgba(0,0,0,.45);
+}
+.fan-mug{left:8%;transform:rotate(-10deg)}
+.fan-clock{right:8%;transform:rotate(10deg)}
+.fan-pen{left:33%;top:3%;z-index:1}
 
 /* ---------- ②申請 ---------- */
 .apply-paper{position:relative;padding:18px 14px 14px}

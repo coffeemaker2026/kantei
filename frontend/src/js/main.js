@@ -57,6 +57,22 @@ const ticket = String(Date.now() % 10000).padStart(4, "0");
 $("ticketTag").textContent = "受付番号 " + ticket;
 $("takeTicket").addEventListener("click", () => go(2));
 
+// 見本の鑑定カード（左にマグカップ、右に目覚まし時計、中央手前にボールペン）
+async function drawFan(){
+  await ensureFonts();
+  const fan = $("fan");
+  for (const kind of ["mug", "clock", "pen"]){
+    const { name, category } = SAMPLES[kind], photo = drawSample(kind);
+    const sample = appraise({ name, signature: signature(photo), category, appeals: 0 });
+    const img = new Image();
+    img.className = "fan-card fan-" + kind;
+    img.alt = "見本の鑑定カード：" + name;
+    img.src = drawCard(sample, { photo, view: { zoom: 1, offX: 0, offY: 0 }, lasso: null }).toDataURL("image/png");
+    fan.append(img);
+  }
+}
+drawFan();
+
 /* ---------- ②申請 ---------- */
 const itemName = $("itemName"), category = $("category");
 const nameError = $("nameError"), photoError = $("photoError");
