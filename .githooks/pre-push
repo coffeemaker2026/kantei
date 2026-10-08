@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# push するコミットに Co-Authored-By・Claude の署名・Claude の作者名が入っていたら push を止める
+dir="$(dirname "$0")"
+pat="$(grep -v '^#' "$dir/claude-credit-pattern" | paste -sd'|')"
+zero=0000000000000000000000000000000000000000
+bad=0
+while read -r lref lsha rref rsha; do
+  [ "$lsha" = "$zero" ] && continue   # ブランチの削除
+  if [ "$rsha" = "$zero" ]; then commits=$(git rev-list "$lsha" --not --remotes); else commits=$(git rev-list "$rsha..$lsha"); fi
+  for c in $commits; do
+    if git log -1 --format='%B' "$c" | grep -E -i -q "$pat" \
+       || git log -1 --format='%an%n%ae%n%cn%n%ce' "$c" | grep -E -i -q 'claude|anthropic'; then
+      echo "pre-push: $(git log -1 --format='%h %s' "$c") に Co-Authored-By・Claude の署名・Claude の作者名があります" >&2
+      bad=1
+    fi
+  done
+done
+[ $bad = 0 ] || { echo "pre-push: push を止めました。メッセージを直してから push してください" >&2; exit 1; }

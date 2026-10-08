@@ -73,6 +73,13 @@
 - フォント：Zen Antique（見出し・ボタン・カードの名前）、Zen Kaku Gothic New（本文）。Google Fonts
 - 画面見本は `.superpowers/brainstorm/` の `screens.html`（Git・配信の対象外）
 
+## Git の決まり（2026年10月8日追加）
+
+- **コミット・PR に Claude の名前を入れない**（Co-Authored-By の行、「Generated with Claude Code」など）。全プロジェクト共通の決まり
+  - 止める仕組み：`.githooks/commit-msg`（コミットを止める）、`.githooks/pre-push`（push を止める）、`.claude/hooks/block-claude-credit.sh`（Claude Code のコマンドを止める）、`.claude/settings.json` の `attribution`。止める文字列は `.githooks/claude-credit-pattern`
+  - git の仕組みは `git config core.hooksPath .githooks` で有効になる（`post-create.sh` が設定する）
+- main に直接 push しない。ブランチで作業し、ブランチから取り込む
+
 ## 開発の手順
 
 - `npm run dev`：開発サーバー（5173番。編集するとすぐ反映される）

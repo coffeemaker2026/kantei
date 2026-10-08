@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# コミットのメッセージに Co-Authored-By・Claude の署名が入っていたらコミットを止める
+dir="$(dirname "$0")"
+pat="$(grep -v '^#' "$dir/claude-credit-pattern" | paste -sd'|')"
+if grep -v '^#' "$1" | grep -E -i -n "$pat" >&2; then
+  echo "commit-msg: Co-Authored-By・Claude の署名はコミットに入れられません。上の行を消してください" >&2
+  exit 1
+fi

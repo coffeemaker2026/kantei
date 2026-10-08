@@ -1,0 +1,5 @@
+# コミット・PR に入れてはいけない文字列（grep -E -i で照合する。# の行は無視）
+co-authored-by:
+noreply@anthropic\.com
+generated with \[?claude
+claude-session:

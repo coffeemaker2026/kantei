@@ -7,6 +7,10 @@ sudo chown "$(id -u):$(id -g)" /home/vscode/.claude
 
 # 確認テスト用の Playwright と Chromium を入れる（ブラウザはコンテナ内に置くので作り直すたびに入れ直す）
 cd /workspace
+
+# コミット・push で Claude の署名を止める git の仕組みを有効にする（.githooks/）
+git config core.hooksPath .githooks
+
 npm ci
 npx playwright install --with-deps chromium
 
