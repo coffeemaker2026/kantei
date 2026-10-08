@@ -90,10 +90,37 @@
 
   <section id="step-review" hidden>
     <h2 class="visually-hidden" tabindex="-1">審査中</h2>
+    <div class="board">
+      <small>ただいま審査中の番号</small>
+      <p class="board-num" id="reviewNumber">0000</p>
+      <small>神界待合室でお待ちください</small>
+    </div>
+    <ul class="review-lines" id="reviewLines" aria-live="polite"></ul>
+    <p class="notice">※ 審査の順番に関するお問い合わせにはお答えできません</p>
+    <p class="skip-hint" id="skipHint">タップで飛ばせます</p>
   </section>
 
   <section id="step-issue" hidden>
     <h2 class="visually-hidden" tabindex="-1">鑑定カードの交付</h2>
+    <div class="issue-card">
+      <div class="stage">
+        <div class="flipper" id="flipper">
+          <div class="face back" aria-hidden="true"><span>神器鑑定所</span></div>
+          <div class="face front" id="front"><img id="cardImg" alt=""></div>
+        </div>
+      </div>
+      <p class="meta"><span id="count"></span><span id="rankText"></span></p>
+    </div>
+    <div class="issue-side">
+      <div class="issue-actions">
+        <button type="button" class="btn" id="appeal">異議を申し立てる</button>
+        <button type="button" class="btn" id="save" hidden>画像を保存</button>
+      </div>
+      <button type="button" class="btn-primary" id="newItem">別の持ち物を鑑定する</button>
+      <p class="issue-status" id="issueStatus" role="status"></p>
+      <div class="slot" data-slot="ad"></div>
+      <div class="slot" data-slot="affiliate"></div>
+    </div>
   </section>
 </main>
 <footer class="site-footer">
