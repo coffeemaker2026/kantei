@@ -5,7 +5,7 @@ import { CATEGORIES, appraise } from "./appraise.js";
 import { signature } from "./signature.js";
 import { createEditor } from "./editor.js";
 import { SAMPLES, drawSample } from "./samples.js";
-import { ensureFonts, drawCard } from "./card.js";
+import { ensureFonts, drawCard } from "./card/index.js";
 
 const $ = id => document.getElementById(id);
 

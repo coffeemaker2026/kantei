@@ -24,8 +24,27 @@ function sky(ctx, b, cx, cy, isZ){
   ctx.fillStyle = g; ctx.fillRect(b.x, b.y, b.w, b.h);
 }
 
-export function renderWindow(ctx, rank, attr, { photo, view, lasso }, win){
-  const base = placeBase(win), s = base.scale, isZ = rank === "Z", glow = GLOW[rank];
+// 写真の端が窓の内側に来るとき（窓が大きい型）、その端をぼかして神界の背景になじませる
+const FEATHER = 80;
+function drawFeathered(ctx, photo, r, b, gray){
+  const pw = photo.width * r.s, ph = photo.height * r.s;
+  const edges = [["left", r.x > b.x], ["right", r.x + pw < b.x + b.w], ["top", r.y > b.y], ["bottom", r.y + ph < b.y + b.h]].filter(e => e[1]);
+  if (!edges.length){ drawPhoto(ctx, photo, r, gray); return; }
+  const c = document.createElement("canvas"); c.width = Math.ceil(b.w); c.height = Math.ceil(b.h);
+  const x = c.getContext("2d"); x.translate(-b.x, -b.y);
+  drawPhoto(x, photo, r, gray);
+  x.globalCompositeOperation = "destination-out";
+  for (const [side] of edges){
+    const [x0, y0, x1, y1] = { left:[r.x, 0, r.x + FEATHER, 0], right:[r.x + pw, 0, r.x + pw - FEATHER, 0], top:[0, r.y, 0, r.y + FEATHER], bottom:[0, r.y + ph, 0, r.y + ph - FEATHER] }[side];
+    const g = x.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)");
+    x.fillStyle = g; x.fillRect(b.x, b.y, b.w, b.h);
+  }
+  ctx.drawImage(c, b.x, b.y);
+}
+
+// place は基準の枠を置く範囲（省略時は窓）。SSR は文字の欄にかからないよう上に寄せる
+export function renderWindow(ctx, rank, attr, { photo, view, lasso }, win, place = win){
+  const base = placeBase(place), s = base.scale, isZ = rank === "Z", glow = GLOW[rank];
   ctx.save();
   ctx.beginPath(); ctx.rect(win.x, win.y, win.w, win.h); ctx.clip();
   // ここからは基準の枠の座標（0〜PW, 0〜PH）。b は窓全体をその座標で表したもの
@@ -54,7 +73,7 @@ export function renderWindow(ctx, rank, attr, { photo, view, lasso }, win){
   } else {
     // 写真が届かない部分のために、先に神界の背景を塗る
     sky(ctx, b, cx, cy, isZ);
-    drawPhoto(ctx, photo, imgRect(photo, view), isZ);
+    drawFeathered(ctx, photo, imgRect(photo, view), b, isZ);
     ctx.save(); ctx.globalCompositeOperation = "screen"; rays(ctx, cx, cy, glow, isZ ? .04 : .10, 24); ctx.restore();
     const v = ctx.createRadialGradient(cx, cy, short * .22, cx, cy, long * .62);
     v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, isZ ? "rgba(40,36,30,.6)" : "rgba(5,8,25,.75)");
